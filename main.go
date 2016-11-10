@@ -62,10 +62,6 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", HomeHandler)
 
-	if port == "" {
-		port = "80"
-	}
-
 	srv := &http.Server{
 		Handler: r,
 		Addr:    ":" + EnvPort,
@@ -88,7 +84,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 // redirect to hydra, which then redirects to the IdP login
 func redirToHydra(w http.ResponseWriter) {
 	//TODO state min 8chars, generate random
-	url := hydraIp +
+	url := EnvHydraURL +
 		`/oauth2/auth?client_id=` +
 		EnvHydraClientID +
 		`&response_type=code&scope=foo&state=123456780`
