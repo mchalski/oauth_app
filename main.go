@@ -19,6 +19,7 @@ var (
 	EnvHydraURL     string
 
 	// oauth client params
+	// for the poc we most likely use the single root client both for the idp and this app
 	EnvHydraClientIDName = "CLIENTID"
 	EnvHydraClientID     string
 
@@ -70,7 +71,8 @@ func main() {
 	l.Fatal(srv.ListenAndServe())
 }
 
-//
+// renders the home screen, if user unauthorized - redirect to hydra/idp to get a token
+// step 1 of the hydra flow
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	//TODO check user session/acc token
 	l.Infof("GET /")
@@ -81,13 +83,17 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	redirToHydra(w)
 }
 
+// TODO token accept callback for step 4 of the flow
+
 // redirect to hydra, which then redirects to the IdP login
 func redirToHydra(w http.ResponseWriter) {
-	//TODO state min 8chars, generate random
+	//TODO
+	// - state min 8chars, generate random
+	// - set some reasonable scope
 	url := EnvHydraURL +
 		`/oauth2/auth?client_id=` +
 		EnvHydraClientID +
-		`&response_type=code&scope=foo&state=123456780`
+		`&response_type=code&scope=dummy&state=123456780`
 
 	w.Header().Set(`Location`,
 		url)
